@@ -62,18 +62,26 @@ def login():
 
             if 'remember_me' in request.form:
                 remember_me = True
-
-            # get user id, load into session
-            login_user(user, remember = remember_me)
-            flash('Logged in successfully.', 'success')
-            # remember to flash a message to the user
-            return redirect(url_for("secure_page"))  # they should be redirected to a secure-page route instead
+                login_user(user, remember = remember_me)
+                flash('Logged in successfully.', 'success')
+                return redirect(url_for('secure_page'))
+            else:
+                login_user(user)
+                flash('Logged in successfully.', 'success')
+                return redirect(url_for('secure_page'))
         else:
             flash('Username or Password is incorrect.', 'danger')
 
     return render_template("login.html", form=form)
 
 
+@app.route("/logout")
+@login_required
+def logout():
+    # Logout 
+    logout_user()
+    flash('You have been logged out.', 'danger')
+    return redirect(url_for('home'))
 # user_loader callback. This callback is used to reload the user object from
 # the user ID stored in the session
 @login_manager.user_loader
